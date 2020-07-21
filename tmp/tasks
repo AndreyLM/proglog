@@ -1,0 +1,7 @@
+1. Need to spend some time to think about Part I
+    - what writes to index
+    - what writes to store
+    - how it reads from index
+    - how it reads from store
+    - mmap - what it lives for
+    

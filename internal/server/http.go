@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -32,34 +31,33 @@ func newHTTPServer() *httpServer {
 
 // ProduceRequest - produce req
 type ProduceRequest struct {
-	Record Record `json:"record,omitempty"`
+	Record Record `json:"record"`
 }
 
 // ProduceResponse - produce response
 type ProduceResponse struct {
-	Offset uint64 `json:"offset,omitempty"`
+	Offset uint64 `json:"offset"`
 }
 
 // ConsumeRequest - Consume req
 type ConsumeRequest struct {
-	Offset uint64 `json:"offset,omitempty"`
+	Offset uint64 `json:"offset"`
 }
 
 // ConsumeResponse - Consume response
 type ConsumeResponse struct {
-	Record Record `json:"record,omitempty"`
+	Record Record `json:"record"`
 }
 
 func (s *httpServer) handleProduce(w http.ResponseWriter, r *http.Request) {
 	var req ProduceRequest
+
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		log.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	off, err := s.Log.Append(req.Record)
 	if err != nil {
-		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -69,7 +67,6 @@ func (s *httpServer) handleProduce(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(res); err != nil {
-		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
